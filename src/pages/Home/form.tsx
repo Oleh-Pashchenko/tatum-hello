@@ -1,6 +1,5 @@
-// App.js
 import { Network, TatumSDK, Ethereum } from "@tatumio/tatum";
-import React, { useState } from "react";
+import { useState } from "react";
 
 function Form() {
   const [inputValue, setInputValue] = useState(""); // State to hold the input value
@@ -22,25 +21,25 @@ function Form() {
     setLabelText(`Balance: ${balanceData.balance}`);
   };
 
-  return (
-    <div>
-      <p>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter ETH wallet address to get balance"
-          style={{ padding: "5px", width: "320px" }}
-        />
-      </p>
-      <button onClick={handleButtonClick} style={{ padding: "5px" }}>
-        Click Me
-      </button>
-      <p style={{ padding: "5px", fontSize: "16px", fontWeight: "bold" }}>
-        {labelText}
-      </p>
-    </div>
-  );
+	return (
+		<div>
+			<p>
+				<input
+					type="text"
+					value={inputValue}
+					onInput={(e) => setInputValue(e.target.value)}
+					placeholder="Enter ETH wallet address to get balance"
+					style={{ padding: '5px', width: '320px' }}
+				/>
+			</p>
+			<button onClick={handleButtonClick} style={{ padding: '5px' }}>
+				Click Me
+			</button>
+			<p style={{ padding: '5px', fontSize: '16px', fontWeight: 'bold' }}>
+				{labelText}
+			</p>
+		</div>
+	);
 }
 
 export default Form;
