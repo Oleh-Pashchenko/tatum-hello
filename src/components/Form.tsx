@@ -1,27 +1,52 @@
 import { Network, TatumSDK, Ethereum } from "@tatumio/tatum";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Form() {
   const [inputValue, setInputValue] = useState(""); // State to hold the input value
   const [labelText, setLabelText] = useState(""); // State to hold the label text
+  const [tatum, setTatum] = useState<Ethereum | null>(null);
+
+  useEffect(() => {
+    const initializeTatum = async () => {
+      const tatumInstance = await TatumSDK.init<Ethereum>({
+        network: Network.ETHEREUM,
+        apiKey: { v4: import.meta.env.VITE_TATUM_API_KEY },
+        verbose: true,
+      });
+      setTatum(tatumInstance);
+    };
+
+    initializeTatum();
+  }, []);
 
   const handleButtonClick = async () => {
-    const tatum = await TatumSDK.init<Ethereum>({
-      network: Network.ETHEREUM,
-      apiKey: { v4: "t-65ddbb2bb792d6001be685d9-442dd087e58442acac87f5f9" },
-      verbose: true,
-    });
-    
 
-    const balance = await tatum.address.getBalance({
-      addresses: [inputValue],
-    });
+    if (!inputValue.trim()) {
+      setLabelText("Please enter a valid Ethereum address.");
+      return;
+    }
 
-    const balanceData = balance.data.filter(
-      (asset) => asset.asset === "ETH"
-    )[0];
+    try {
 
-    setLabelText(`Balance: ${balanceData.balance}`);
+      const balance = await tatum.address.getBalance({
+        addresses: [inputValue],
+      });
+
+      if (balance.status === "ERROR") {
+        setLabelText("Error fetching balance. Please check the address.");
+        return;
+      }
+
+      const ethBalance = balance.data.find((asset) => asset.asset === "ETH");
+
+      if (!ethBalance) {
+        setLabelText("No ETH balance found for this address.");
+      } else {
+        setLabelText(`Balance: ${ethBalance.balance} ETH`);
+      }
+    } catch (error) {
+      setLabelText("Failed to retrieve balance. Please try again.");
+    }
   };
 
   const handleInputChange = (e: Event) => {
