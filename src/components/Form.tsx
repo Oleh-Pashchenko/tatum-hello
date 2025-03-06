@@ -11,9 +11,12 @@ function Form() {
       apiKey: { v4: "t-65ddbb2bb792d6001be685d9-442dd087e58442acac87f5f9" },
       verbose: true,
     });
+    
+
     const balance = await tatum.address.getBalance({
       addresses: [inputValue],
     });
+
     const balanceData = balance.data.filter(
       (asset) => asset.asset === "ETH"
     )[0];
@@ -21,25 +24,30 @@ function Form() {
     setLabelText(`Balance: ${balanceData.balance}`);
   };
 
-	return (
-		<div>
-			<p>
-				<input
-					type="text"
-					value={inputValue}
-					onInput={(e) => setInputValue(e.target.value)}
-					placeholder="Enter ETH wallet address to get balance"
-					style={{ padding: '5px', width: '320px' }}
-				/>
-			</p>
-			<button onClick={handleButtonClick} style={{ padding: '5px' }}>
-				Click Me
-			</button>
-			<p style={{ padding: '5px', fontSize: '16px', fontWeight: 'bold' }}>
-				{labelText}
-			</p>
-		</div>
-	);
+  const handleInputChange = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    setInputValue(target.value);
+  };
+
+  return (
+    <div>
+      <p>
+        <input
+          type="text"
+          value={inputValue}
+          onInput={handleInputChange}
+          placeholder="Enter ETH wallet address to get balance"
+          style={{ padding: "5px", width: "320px" }}
+        />
+      </p>
+      <button onClick={handleButtonClick} style={{ padding: "5px" }}>
+        Click Me
+      </button>
+      <p style={{ padding: "5px", fontSize: "16px", fontWeight: "bold" }}>
+        {labelText}
+      </p>
+    </div>
+  );
 }
 
 export default Form;
